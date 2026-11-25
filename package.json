@@ -1,0 +1,19 @@
+{
+  "name": "guard-x",
+  "version": "1.0.0",
+  "description": "Türkçe Discord güvenlik ve kayıt sistemi",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "komutlari-yukle": "node src/deploy-commands.js"
+  },
+  "engines": { "node": ">=20.0.0" },
+  "dependencies": {
+    "discord.js": "^14.19.3",
+    "dotenv": "^16.4.7",
+    "mongoose": "^8.12.1",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "express-rate-limit": "^7.5.0"
+  }
+}
