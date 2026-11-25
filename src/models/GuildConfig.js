@@ -1,20 +1,23 @@
 const mongoose = require("mongoose");
 
-const GuildConfigSchema = new mongoose.Schema({
+const schema = new mongoose.Schema({
   guildId: { type: String, required: true, unique: true, index: true },
-  language: { type: String, default: "tr" },
-  guardEnabled: { type: Boolean, default: false },
-  logChannels: { type: Map, of: String, default: {} },
-  whitelistUsers: { type: [String], default: [] },
-  whitelistRoles: { type: [String], default: [] },
-  whitelistBots: { type: [String], default: [] },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-});
+  normalLogChannelId: { type: String, default: null },
+  guardLogChannelId: { type: String, default: null },
+  whitelist: { type: [String], default: [] },
+  guardEnabled: { type: Boolean, default: true },
+  lockdown: { type: Boolean, default: false },
+  raid: {
+    enabled: { type: Boolean, default: true },
+    joinLimit: { type: Number, default: 7 },
+    windowMs: { type: Number, default: 10000 }
+  },
+  thresholds: {
+    channelDelete: { type: Number, default: 2 },
+    roleDelete: { type: Number, default: 2 },
+    ban: { type: Number, default: 3 },
+    kick: { type: Number, default: 3 }
+  }
+}, { timestamps: true });
 
-GuildConfigSchema.pre("save", function(next) {
-  this.updatedAt = new Date();
-  next();
-});
-
-module.exports = mongoose.model("GuildConfig", GuildConfigSchema);
+module.exports = mongoose.models.GuildConfig || mongoose.model("GuildConfig", schema);

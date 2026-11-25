@@ -1,16 +1,12 @@
 require("dotenv").config();
 
 function gerekli(deger, ad) {
-  if (!deger || !deger.trim()) {
-    throw new Error(`${ad} .env dosyasında tanımlanmamış.`);
-  }
-  return deger.trim();
+  if (!deger) throw new Error(`${ad} .env dosyasında tanımlı değil.`);
+  return deger;
 }
 
 const sahipler = (process.env.OWNER_IDS || "")
-  .split(",")
-  .map((id) => id.trim())
-  .filter(Boolean);
+  .split(",").map(x => x.trim()).filter(Boolean);
 
 module.exports = {
   token: gerekli(process.env.DISCORD_TOKEN, "DISCORD_TOKEN"),
@@ -18,6 +14,6 @@ module.exports = {
   mongoUri: gerekli(process.env.MONGODB_URI, "MONGODB_URI"),
   ownerIds: sahipler,
   testGuildId: process.env.TEST_GUILD_ID || "",
-  port: Number(process.env.PORT || 3000),
-  nodeEnv: process.env.NODE_ENV || "development"
+  nodeEnv: process.env.NODE_ENV || "development",
+  port: Number(process.env.PORT || 3000)
 };

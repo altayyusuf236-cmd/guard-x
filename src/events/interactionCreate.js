@@ -1,40 +1,21 @@
-const { Events } = require("discord.js");
-const { kayitOlustur } = require("../utils/logger");
-
+const { kaydet } = require("../utils/logger");
+const { botSahibiMi } = require("../utils/owner");
 module.exports = {
-  name: Events.InteractionCreate,
-  async execute(interaction) {
+  name: "interactionCreate",
+  async execute(interaction, client) {
     if (!interaction.isChatInputCommand()) return;
-
-    const komut = interaction.client.commands.get(interaction.commandName);
-    if (!komut) {
-      return interaction.reply({
-        content: "Bu komut şu anda kullanılamıyor.",
-        ephemeral: true
-      }).catch(() => {});
-    }
-
+    const command = client.commands.get(interaction.commandName);
+    if (!command) return interaction.reply({ content: "Bu komut yüklenemedi.", ephemeral: true });
     try {
-      await komut.execute(interaction, interaction.client);
-      await kayitOlustur({
-        guildId: interaction.guildId,
-        actorId: interaction.user.id,
-        type: "COMMAND_USED",
-        description: `/${interaction.commandName} komutu kullanıldı.`,
-        details: { command: interaction.commandName }
-      });
-    } catch (hata) {
-      console.error(`[KOMUT HATASI] /${interaction.commandName}`, hata);
-      const yanit = {
-        content: "Komut çalıştırılırken bir hata oluştu. Hata kayıt altına alındı.",
-        ephemeral: true
-      };
-
-      if (interaction.replied || interaction.deferred) {
-        await interaction.followUp(yanit).catch(() => {});
-      } else {
-        await interaction.reply(yanit).catch(() => {});
-      }
+      if (command.ownerOnly && !botSahibiMi(interaction.user.id))
+        return interaction.reply({ content: "Bu komutu yalnızca bot sahibi kullanabilir.", ephemeral: true });
+      await command.execute(interaction, client);
+      if (interaction.guild) await kaydet(interaction.guild, "command", `/${interaction.commandName} komutu kullanıldı.`, { actorId: interaction.user.id });
+    } catch (e) {
+      console.error(`[KOMUT ${interaction.commandName}]`, e);
+      const msg = { content: "Komut çalıştırılırken bir hata oluştu.", ephemeral: true };
+      if (interaction.replied || interaction.deferred) await interaction.followUp(msg).catch(() => null);
+      else await interaction.reply(msg).catch(() => null);
     }
   }
 };

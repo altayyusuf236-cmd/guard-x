@@ -1,21 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-
+const { SlashCommandBuilder } = require("discord.js");
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("botbilgi")
-    .setDescription("Botun çalışma bilgilerini gösterir."),
+  data: new SlashCommandBuilder().setName("botbilgi").setDescription("GUARD X hakkında bilgi verir."),
   async execute(interaction, client) {
-    const embed = new EmbedBuilder()
-      .setColor(0x5865F2)
-      .setTitle("GUARD X")
-      .setDescription("Türkçe Discord güvenlik ve kayıt sistemi.")
-      .addFields(
-        { name: "Gecikme", value: `${client.ws.ping} ms`, inline: true },
-        { name: "Sunucu sayısı", value: `${client.guilds.cache.size}`, inline: true },
-        { name: "Çalışma süresi", value: `${Math.floor(process.uptime())} saniye`, inline: true }
-      )
-      .setTimestamp();
-
-    await interaction.reply({ embeds: [embed], ephemeral: true });
+    await interaction.reply({ content: `**GUARD X**\\nSunucu: ${client.guilds.cache.size}\\nKullanıcı: ${client.users.cache.size}\\nDiscord.js: ${require("discord.js").version}`, ephemeral: true });
   }
 };

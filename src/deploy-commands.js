@@ -5,33 +5,25 @@ const { REST, Routes } = require("discord.js");
 const { clientId, token, testGuildId } = require("./config");
 
 const komutlar = [];
-const anaDizin = path.join(__dirname, "commands");
-
-for (const kategori of fs.readdirSync(anaDizin)) {
-  const kategoriYolu = path.join(anaDizin, kategori);
-  if (!fs.statSync(kategoriYolu).isDirectory()) continue;
-
-  for (const dosya of fs.readdirSync(kategoriYolu).filter(f => f.endsWith(".js"))) {
-    const komut = require(path.join(kategoriYolu, dosya));
+const root = path.join(__dirname, "commands");
+for (const kategori of fs.readdirSync(root)) {
+  const dir = path.join(root, kategori);
+  if (!fs.statSync(dir).isDirectory()) continue;
+  for (const dosya of fs.readdirSync(dir).filter(f => f.endsWith(".js"))) {
+    const komut = require(path.join(dir, dosya));
     komutlar.push(komut.data.toJSON());
   }
 }
-
 const rest = new REST({ version: "10" }).setToken(token);
-
 (async () => {
   try {
-    console.log(`[KOMUT] ${komutlar.length} komut Discord'a yükleniyor...`);
-
+    console.log(`[KOMUT] ${komutlar.length} komut yükleniyor...`);
     if (testGuildId) {
       await rest.put(Routes.applicationGuildCommands(clientId, testGuildId), { body: komutlar });
-      console.log("[KOMUT] Komutlar test sunucusuna yüklendi.");
+      console.log("[KOMUT] Test sunucusu komutları güncellendi.");
     } else {
       await rest.put(Routes.applicationCommands(clientId), { body: komutlar });
-      console.log("[KOMUT] Komutlar global olarak yüklendi. Yayılması zaman alabilir.");
+      console.log("[KOMUT] Global komutlar güncellendi.");
     }
-  } catch (hata) {
-    console.error("[KOMUT YÜKLEME HATASI]", hata);
-    process.exit(1);
-  }
+  } catch (e) { console.error("[KOMUT HATASI]", e); process.exit(1); }
 })();

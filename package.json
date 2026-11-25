@@ -1,13 +1,13 @@
 {
   "name": "guard-x",
-  "version": "1.0.0",
-  "description": "Türkçe Discord güvenlik ve kayıt sistemi",
+  "version": "2.0.0",
+  "description": "GUARD X Discord protection and logging bot",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
     "komutlari-yukle": "node src/deploy-commands.js"
   },
-  "engines": { "node": ">=20.0.0" },
+  "engines": { "node": ">=20" },
   "dependencies": {
     "discord.js": "^14.19.3",
     "dotenv": "^16.4.7",

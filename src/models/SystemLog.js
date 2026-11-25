@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 
-const SystemLogSchema = new mongoose.Schema({
-  guildId: { type: String, default: null, index: true },
-  actorId: { type: String, default: null, index: true },
+const schema = new mongoose.Schema({
+  guildId: { type: String, index: true },
   type: { type: String, required: true, index: true },
-  description: { type: String, required: true },
-  details: { type: mongoose.Schema.Types.Mixed, default: {} },
+  actorId: String,
+  targetId: String,
+  details: mongoose.Schema.Types.Mixed,
   createdAt: { type: Date, default: Date.now, index: true }
-});
+}, { versionKey: false });
 
-module.exports = mongoose.model("SystemLog", SystemLogSchema);
+module.exports = mongoose.models.SystemLog || mongoose.model("SystemLog", schema);
